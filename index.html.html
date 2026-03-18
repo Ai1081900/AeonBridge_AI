@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Fragile Resonance - Interactive Display</title>
+    <style>
+        /* --- CSS การจัดหน้าจอ --- */
+       /* --- CSS การจัดหน้าจอ (คงเดิม) --- */
+        /* --- Layout พื้นฐาน (คงเดิม) --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .master-container {
+            width: 100vw;
+            height: 100vh;
+            background-image: url('image_0.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- เทคนิคใหม่: ขยาย Hitbox ให้ครอบคลุมหยดน้ำทั้งหมด --- */
+        .drop-resonance-sensor {
+            /* ปรับขนาดให้ครอบคลุมพื้นที่หยดน้ำและดวงตา (ประมาณ 12-15% ของหน้าจอ) */
+            width: 180px; 
+            height: 240px;
+            background: transparent; /* โปร่งใสสนิท */
+            position: absolute;
+            
+            /* ปรับตำแหน่ง Center ให้ตรงกับหยดน้ำในภาพ */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -15%); /* เลื่อนขึ้นเล็กน้อยเพื่อให้ตรงมือ */
+            
+            border-radius: 50% 50% 40% 40%; /* ทรงหยดน้ำ/วงรี เพื่อครอบคลุมส่วนล่างด้วย */
+            z-index: 100;
+            cursor: pointer;
+            
+            /* คุม Transition ตอนเมาส์ออก (2.5 วินาที) */
+            transition: all 2.5s ease-out;
+        }
+
+        /* --- ชั้นแสง Aura ที่ซ้อนอยู่ด้านหลัง --- */
+        .drop-resonance-sensor::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 250, 200, 0.6) 0%, rgba(255, 250, 200, 0) 70%);
+            
+            /* สถานะเริ่มต้น: ซ่อนแสงไว้และขนาดเล็ก */
+            opacity: 0;
+            transform: scale(0.3);
+            filter: blur(15px);
+            z-index: -1;
+
+            /* คุม Transition ตอนเมาส์ออก (2.5 วินาที) */
+            transition: opacity 2.5s ease-out, transform 2.5s ease-out, filter 2.5s ease-out;
+        }
+
+        /* --- เมื่อเมาส์ Hover (ทุกส่วนของหยดน้ำที่ Sensor ครอบคลุม) --- */
+        .drop-resonance-sensor:hover::after {
+            opacity: 1;
+            transform: scale(2.2); /* ขยายรัศมีแสงแผ่ออกมา */
+            
+            /* เทคนิค Drop-shadow 5 ชั้น เพื่อความฟุ้งกระจายของแสงศักดิ์สิทธิ์ */
+            filter: blur(8px)
+                    drop-shadow(0 0 15px rgba(255, 245, 180, 0.9))   /* ชั้นในสุด สว่างเข้ม */
+                    drop-shadow(0 0 30px rgba(255, 240, 150, 0.7))   /* ชั้นกลาง นุ่มนวล */
+                    drop-shadow(0 0 50px rgba(255, 230, 120, 0.5))   /* ชั้นแผ่ สีทองอ่อน */
+                    drop-shadow(0 0 80px rgba(255, 220, 100, 0.3))   /* ชั้นกว้าง ฟุ้งกระจาย */
+                    drop-shadow(0 0 120px rgba(255, 210, 80, 0.2));  /* ชั้นนอกสุด สร้างบรรยากาศ */
+
+            /* คุม Transition ตอนเมาส์เข้า (2 วินาที) - ช้า พริ้ว และมีพลัง */
+            transition: opacity 2s ease-in-out, transform 2s ease-in-out, filter 2s ease-in-out;
+        }
+
+        /* เพิ่มความสว่างให้รูปหยดน้ำเล็กน้อยเมื่อถูกสัมผัส */
+        .drop-resonance-sensor:hover {
+            backdrop-filter: brightness(1.15);
+        }
+
+        /* --- CSS เพื่อซ่อน Cursor เมื่อวางเหนือรูปภาพ (ตามคำขอ) --- */
+        /* ถ้าเปิดบรรทัดนี้ เมาส์จะหายไปเมื่อวางบนภาพ. 
+           (เราเลือกที่จะแสดง Cursor มือ (pointer) บนพื้นที่เซ็นเซอร์ด้านบนเพื่อ UX ที่ดี
+            แต่ถ้าคุณต้องการให้Cursorหายไปทั้งหมดเมื่ออยู่บนภาพ ให้ลบ Comment บรรทัดนี้)
+        */
+        /* .master-container:hover { cursor: none; } */
+
+    </style>
+</head>
+<body>
+
+    <div class="master-container">
+        <div class="drop-resonance-sensor"></div>
+    </div>
+
+</body>
+</html>
